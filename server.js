@@ -30,27 +30,20 @@ app.get('/contato', (req, res) => {
     res.sendFile(path.join(__dirname, 'views/contato.html'));
 });
 
-let ultimoContato = null;
-
 app.post('/contato', (req, res) => {
-    ultimoContato = req.body;
-    res.redirect('/contato-recebido');
-});
+    const { nome, email, assunto, mensagem } = req.body;
 
-app.get('/contato-recebido', (req, res) => {
-    if (!ultimoContato) {
-        return res.redirect('/');
+    if (!nome || !email || !assunto || !mensagem) {
+        return res.status(400).send('Todos os campos são obrigatórios.');
     }
 
-    const { nome, email, assunto, mensagem } = ultimoContato;
-
-    res.send(`
-    <h1>Contato recebido! Obrigado, ${nome}!</h1>
-    <p><strong>Email:</strong> ${email}</p>
-    <p><strong>Assunto:</strong> ${assunto}</p>
-    <p><strong>Mensagem:</strong> ${mensagem}</p>
-    <a href="/">Voltar para o início</a>
- `);
+    res.status(200).type('html').send(`
+        <h1>Contato recebido! Obrigado, ${nome}!</h1>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Assunto:</strong> ${assunto}</p>
+        <p><strong>Mensagem:</strong> ${mensagem}</p>
+        <a href="/">Voltar para o início</a>
+    `);
 });
 
 app.get('/api/lanches', (req, res) => {
